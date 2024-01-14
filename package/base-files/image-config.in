@@ -14,7 +14,7 @@ config TARGET_DEFAULT_LAN_IP_FROM_PREINIT
 
 menuconfig PREINITOPT
 	bool "Preinit configuration options" if IMAGEOPT
-	default n
+	default y
 	help
 		These options are used to control the environment used to initialize
 		the system before running init (which typically mean /sbin/init which
@@ -53,7 +53,7 @@ config TARGET_PREINIT_TIMEOUT
 config TARGET_PREINIT_SHOW_NETMSG
 	bool
 	prompt "Show all preinit network messages" if PREINITOPT
-	default n
+	default y
 	help
 		Show preinit all network messages (via netmsg broadcast), not only
 		the message indicating to press reset to enter failsafe.  Note that

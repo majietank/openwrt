@@ -1601,6 +1601,7 @@ static int fe_probe(struct platform_device *pdev)
 			goto err_free_dev;
 		}
 		spin_lock_init(&priv->hw_stats->stats_lock);
+		u64_stats_init(&priv->hw_stats->syncp);
 	}
 
 	sysclk = devm_clk_get(&pdev->dev, NULL);
@@ -1628,7 +1629,6 @@ static int fe_probe(struct platform_device *pdev)
 	priv->tx_ring.tx_ring_size = NUM_DMA_DESC;
 	priv->rx_ring.rx_ring_size = NUM_DMA_DESC;
 	INIT_WORK(&priv->pending_work, fe_pending_work);
-	u64_stats_init(&priv->hw_stats->syncp);
 
 	napi_weight = 16;
 	if (priv->flags & FE_FLAG_NAPI_WEIGHT) {
@@ -1636,11 +1636,7 @@ static int fe_probe(struct platform_device *pdev)
 		priv->tx_ring.tx_ring_size *= 4;
 		priv->rx_ring.rx_ring_size *= 4;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
 	netif_napi_add_weight(netdev, &priv->rx_napi, fe_poll, napi_weight);
-#else
-	netif_napi_add(netdev, &priv->rx_napi, fe_poll, napi_weight);
-#endif
 	fe_set_ethtool_ops(netdev);
 
 	err = register_netdev(netdev);

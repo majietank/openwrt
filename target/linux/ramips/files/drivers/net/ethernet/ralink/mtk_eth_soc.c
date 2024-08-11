@@ -487,7 +487,7 @@ static void fe_get_stats64(struct net_device *dev,
 	}
 
 	do {
-		start = u64_stats_fetch_begin_irq(&hwstats->syncp);
+		start = u64_stats_fetch_begin(&hwstats->syncp);
 		storage->rx_packets = hwstats->rx_packets;
 		storage->tx_packets = hwstats->tx_packets;
 		storage->rx_bytes = hwstats->rx_bytes;
@@ -499,7 +499,7 @@ static void fe_get_stats64(struct net_device *dev,
 		storage->rx_crc_errors = hwstats->rx_fcs_errors;
 		storage->rx_errors = hwstats->rx_checksum_errors;
 		storage->tx_aborted_errors = hwstats->tx_skip;
-	} while (u64_stats_fetch_retry_irq(&hwstats->syncp, start));
+	} while (u64_stats_fetch_retry(&hwstats->syncp, start));
 
 	storage->tx_errors = priv->netdev->stats.tx_errors;
 	storage->rx_dropped = priv->netdev->stats.rx_dropped;
@@ -1480,7 +1480,7 @@ static const struct net_device_ops fe_netdev_ops = {
 	.ndo_start_xmit		= fe_start_xmit,
 	.ndo_set_mac_address	= fe_set_mac_address,
 	.ndo_validate_addr	= eth_validate_addr,
-	.ndo_do_ioctl		= fe_do_ioctl,
+	.ndo_eth_ioctl		= fe_do_ioctl,
 	.ndo_change_mtu		= fe_change_mtu,
 	.ndo_tx_timeout		= fe_tx_timeout,
 	.ndo_get_stats64        = fe_get_stats64,
